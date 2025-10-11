@@ -1,28 +1,24 @@
-const Nodemailer = require("nodemailer");
-const { MailtrapTransport } = require("mailtrap");
+import { Vonage } from '@vonage/server-sdk';
+import dotenv from 'dotenv';
 
-const TOKEN = "bcbcbe543d1def4e5dc2b6124a96afde";
+dotenv.config();
 
-const transport = Nodemailer.createTransport(
-  MailtrapTransport({
-    token: TOKEN,
-  })
-);
+const vonage = new Vonage({
+  apiKey: '9278200e',
+  apiSecret: 'zb6LV8qp88qsPjaQ',
+});
 
-const sender = {
-  address: "hello@demomailtrap.co",
-  name: "Mailtrap Test",
-};
-const recipients = [
-  "thutukurimokshithsai@gmail.com",
-];
+const from = 'VonageAPI'; // Sender ID (11 chars max)
+const to = '918519905694'; // Recipient number in international format without +
+const text = 'test SMS from infinity Squad LMS';
 
-transport
-  .sendMail({
-    from: sender,
-    to: recipients,
-    subject: "You are awesome!",
-    text: "Congrats for sending test email with Mailtrap!",
-    category: "Integration Test",
-  })
-  .then(console.log, console.error);
+async function sendSMS() {
+  try {
+    const response = await vonage.sms.send({ to, from, text });
+    console.log('✅ SMS sent successfully:', response.messages[0]);
+  } catch (error) {
+    console.error('❌ Failed to send SMS:', error);
+  }
+}
+
+sendSMS();
